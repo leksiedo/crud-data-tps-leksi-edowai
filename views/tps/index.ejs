@@ -1,0 +1,15 @@
+<%- include('../partials/head', { title }) %>
+<div class="app-shell"><%- include('../partials/sidebar') %><main class="main-content">
+<header class="topbar"><div><span class="eyebrow">MASTER DATA / PENGELOLAAN</span><h1>Data Tempat Pembuangan Sampah</h1><p class="subtitle">Kelola informasi lokasi dan kapasitas TPS di Kabupaten Deiyai.</p></div><div class="top-user"><span class="online-dot"></span> Sistem Aktif</div></header>
+<% if (message) { %><div class="alert success"><span>✓</span><%= message %></div><% } %>
+<section class="stats-grid">
+  <article class="stat-card"><div class="stat-icon green">▦</div><div><span>Total Lokasi TPS</span><strong><%= rows.length %></strong><small>Data terdaftar</small></div></article>
+  <article class="stat-card"><div class="stat-icon blue">✓</div><div><span>TPS Aktif</span><strong><%= rows.filter(x => x.status === 'Aktif').length %></strong><small>Siap digunakan</small></div></article>
+  <article class="stat-card"><div class="stat-icon orange">⚒</div><div><span>Perlu Perbaikan</span><strong><%= rows.filter(x => x.status === 'Perlu Perbaikan').length %></strong><small>Perlu tindak lanjut</small></div></article>
+</section>
+<section class="panel"><div class="panel-head"><div><h2>Daftar Data TPS</h2><p>Informasi seluruh titik pengelolaan sampah yang tercatat.</p></div><a class="btn btn-primary" href="/tps/tambah"><span>＋</span> Tambah Data TPS</a></div>
+<div class="table-wrap"><table><thead><tr><th>NO</th><th>NAMA & LOKASI TPS</th><th>DISTRIK</th><th>JENIS</th><th>KAPASITAS</th><th>STATUS</th><th>AKSI</th></tr></thead><tbody>
+<% if (!rows.length) { %><tr><td colspan="7" class="empty-state"><div class="empty-icon">▤</div><strong>Belum ada data TPS</strong><span>Tambahkan data pertama untuk mulai mengelola lokasi TPS.</span><a class="btn btn-primary" href="/tps/tambah">Tambah Data TPS</a></td></tr><% } %>
+<% rows.forEach((item, index) => { %><tr><td class="muted"><%= String(index + 1).padStart(2, '0') %></td><td><strong><%= item.nama_tps %></strong><small class="cell-sub"><%= item.alamat %></small></td><td><%= item.distrik %></td><td><span class="type-pill"><%= item.jenis %></span></td><td><strong><%= Number(item.kapasitas_kg).toLocaleString('id-ID') %></strong> <small>kg</small></td><td><span class="status <%= item.status === 'Aktif' ? 'is-active' : item.status === 'Perlu Perbaikan' ? 'is-warning' : 'is-off' %>"><i></i><%= item.status %></span></td><td><div class="actions"><a class="action edit" href="/tps/<%= item.id %>/edit" aria-label="Edit">✎</a><form method="POST" action="/tps/<%= item.id %>/hapus" onsubmit="return confirm('Yakin ingin menghapus data TPS ini?')"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="action delete" type="submit" aria-label="Hapus">⌫</button></form></div></td></tr><% }) %>
+</tbody></table></div><div class="table-foot"><span>Menampilkan <strong><%= rows.length %></strong> data TPS</span><span>Data tersimpan di MySQL</span></div></section>
+<%- include('../partials/footer') %>
