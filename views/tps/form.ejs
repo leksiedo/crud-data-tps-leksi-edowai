@@ -1,0 +1,14 @@
+<%- include('../partials/head', { title }) %>
+<div class="app-shell"><%- include('../partials/sidebar') %><main class="main-content">
+<header class="topbar"><div><span class="eyebrow">MASTER DATA / DATA TPS / <%= mode === 'create' ? 'TAMBAH' : 'EDIT' %></span><h1><%= title %></h1><p class="subtitle">Lengkapi informasi lokasi tempat pembuangan sampah.</p></div><a class="btn btn-light" href="/tps">← Kembali</a></header>
+<section class="panel form-panel"><div class="panel-head"><div><h2>Informasi TPS</h2><p>Kolom bertanda <b>*</b> wajib diisi.</p></div><span class="step-tag">FORMULIR DATA</span></div>
+<% if (error) { %><div class="alert error"><span>!</span><%= error %></div><% } %>
+<form method="POST" action="<%= action %>" class="data-form"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<div class="form-grid"><label class="field full"><span>Nama TPS <b>*</b></span><input name="nama_tps" required maxlength="120" value="<%= item.nama_tps || '' %>" placeholder="Contoh: TPS Waghete"></label>
+<label class="field full"><span>Alamat / Lokasi <b>*</b></span><textarea name="alamat" required maxlength="255" rows="3" placeholder="Masukkan alamat atau deskripsi lokasi"><%= item.alamat || '' %></textarea></label>
+<label class="field"><span>Distrik <b>*</b></span><input name="distrik" required maxlength="100" value="<%= item.distrik || '' %>" placeholder="Contoh: Tigi"></label>
+<label class="field"><span>Jenis TPS <b>*</b></span><select name="jenis" required><% ['TPS Sementara','TPS 3R','TPST'].forEach(v => { %><option value="<%= v %>" <%= item.jenis === v ? 'selected' : '' %>><%= v %></option><% }) %></select></label>
+<label class="field"><span>Kapasitas (kg) <b>*</b></span><input type="number" name="kapasitas_kg" min="0" step="1" required value="<%= item.kapasitas_kg ?? 0 %>"></label>
+<label class="field"><span>Status Operasional <b>*</b></span><select name="status" required><% ['Aktif','Perlu Perbaikan','Tidak Aktif'].forEach(v => { %><option value="<%= v %>" <%= item.status === v ? 'selected' : '' %>><%= v %></option><% }) %></select></label></div>
+<div class="form-actions"><a class="btn btn-light" href="/tps">Batal</a><button class="btn btn-primary" type="submit"><%= mode === 'create' ? 'Simpan Data' : 'Simpan Perubahan' %> <span>→</span></button></div></form></section>
+<%- include('../partials/footer') %>
